@@ -7,8 +7,9 @@ class RecordingCard extends StatelessWidget {
   final Function pause;
   final Function stop;
   final Function delete;
+  final Function editName;
 
-  RecordingCard({this.rec, this.play, this.pause, this.stop, this.delete});
+  RecordingCard({this.rec, this.play, this.pause, this.stop, this.delete, this.editName});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class RecordingCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: editName,
                   icon: Icon(Icons.edit),
                   iconSize: 24.0,
                 ),

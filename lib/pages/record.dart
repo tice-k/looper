@@ -115,6 +115,33 @@ class _RecorderState extends State<Recorder> {
                       clips.remove(clips[index]);
                     });
                   },
+                  editName: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        TextEditingController controller =
+                            TextEditingController(
+                                text: clips[index].recordingName);
+                        return AlertDialog(
+                          title: Text('Enter name:'),
+                          content: TextField(
+                            controller: controller,
+                          ),
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.check),
+                              onPressed: () {
+                                setState(() {
+                                  clips[index].recordingName = controller.text;
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 );
               },
             ),
@@ -130,8 +157,7 @@ class _RecorderState extends State<Recorder> {
         Directory appDoc = await getApplicationDocumentsDirectory();
         _tStart = DateTime.now().millisecondsSinceEpoch; // start time
         String recordingPath = appDoc.path + '/custom_recording$_tStart.m4a';
-        await AudioRecorder.start(
-            path: recordingPath);
+        await AudioRecorder.start(path: recordingPath);
         bool startedRec = await AudioRecorder.isRecording;
         setState(() {
           _recording = Recording(duration: Duration(), path: '');
