@@ -11,7 +11,9 @@ class _PlayState extends State<Play> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.green,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+      ),
     );
   }
 }

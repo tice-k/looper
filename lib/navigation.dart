@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:looper/pages/home.dart';
+import 'package:looper/pages/projects.dart';
 import 'package:looper/pages/record.dart';
 import 'package:looper/pages/play.dart';
 
@@ -9,11 +10,31 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
+
   int currentPage = 0;
   final List<Widget> _pages = [
     Home(),
+    ProjectView(),
     Recorder(),
-    Play()
+    Play(),
+  ];
+  final List<BottomNavigationBarItem> _pageIcons = [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      title: Text('Home'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.folder_open),
+      title: Text('Projects'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.headset_mic),
+      title: Text('Clips'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.audiotrack),
+      title: Text('Play'),
+    ),
   ];
 
   @override
@@ -27,26 +48,15 @@ class _NavigationState extends State<Navigation> {
       ),
       body: _pages[currentPage],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.blue[900],
         onTap: (index) {
           setState(() {
             currentPage = index;
           });
         },
         currentIndex: currentPage,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text('Add'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.audiotrack),
-            title: Text('Play'),
-          ),
-        ],
+        items: _pageIcons,
       ),
     );
   }

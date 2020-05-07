@@ -41,12 +41,15 @@ class _RecorderState extends State<Recorder> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey,
+      ),
       child: Column(
         children: <Widget>[
-          // make a new recording card
+          // card: make a new recording
           Card(
             margin: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
-            color: Colors.blue[400],
+            color: Colors.blue,
             child: Padding(
               padding: const EdgeInsets.all(14.0),
               child: Column(
@@ -63,6 +66,7 @@ class _RecorderState extends State<Recorder> {
                     height: 8.0,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       // record button
                       IconButton(

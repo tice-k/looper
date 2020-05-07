@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Colors.grey,
       ),
       child: Center(
         child: Padding(
