@@ -1,9 +1,9 @@
 class Clip {
   String recordingName;
   String artistName;
-  String fileName;
+  String fileName; // path name
   String audioPlayerID;
-  int length;
+  int length; // in milliseconds
   bool isLocal;
 
   Clip(

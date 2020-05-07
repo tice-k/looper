@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:looper/helpers/recording.dart';
@@ -17,21 +18,23 @@ class Recorder extends StatefulWidget {
 
 class _RecorderState extends State<Recorder> {
   static AudioCache assetPlayer = AudioCache();
-  List<AudioPlayer> players = [];
-  Recording _recording = Recording();
+  List<AudioPlayer> players = []; // list of audio players for each clip
   bool _isRecording = false;
-  int _tStart;
+  Stopwatch _stopwatch = Stopwatch();
+  Timer _timer;
 
   List<Clip> clips = [
     Clip(
       recordingName: 'The Nights',
       artistName: 'Avicii',
       fileName: 'the-nights.mp3',
+      length: 173000,
     ),
     Clip(
       recordingName: 'Here With Me',
       artistName: 'Marshmello',
       fileName: 'here-with-me-ft-chvrches.mp3',
+      length: 154000,
     ),
   ];
 
@@ -40,6 +43,7 @@ class _RecorderState extends State<Recorder> {
     return Container(
       child: Column(
         children: <Widget>[
+          // make a new recording card
           Card(
             margin: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
             color: Colors.blue[400],
@@ -59,21 +63,17 @@ class _RecorderState extends State<Recorder> {
                     height: 8.0,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
+                      // record button
                       IconButton(
-                        onPressed: _isRecording ? null : _startRecording,
+                        onPressed: _isRecording ? _stopRecording : _startRecording,
+                        color: _isRecording ? Colors.red[900] : Colors.black,
                         icon: Icon(Icons.fiber_manual_record),
                         iconSize: 30.0,
-                        color: _isRecording ? Colors.red[900] : Colors.black,
-                        disabledColor: Colors.red,
                       ),
-                      IconButton(
-                        onPressed: _isRecording ? _stopRecording : null,
-                        icon: Icon(Icons.stop),
-                        iconSize: 30.0,
-                        color: _isRecording ? Colors.black : Colors.grey[700],
-                      ),
+//                      Text(
+//                        _printDuration(_stopwatch.elapsed),
+//                      ),
                     ],
                   )
                 ],
@@ -156,13 +156,12 @@ class _RecorderState extends State<Recorder> {
     try {
       if (await AudioRecorder.hasPermissions) {
         Directory appDoc = await getApplicationDocumentsDirectory();
-        _tStart = DateTime.now().millisecondsSinceEpoch; // start time
-        String recordingPath = appDoc.path + '/custom_recording$_tStart.m4a';
+        int tStart = DateTime.now().millisecondsSinceEpoch;
+        String recordingPath = appDoc.path + '/custom_recording$tStart.m4a';
         await AudioRecorder.start(path: recordingPath);
+        _stopwatch.start();
         bool startedRec = await AudioRecorder.isRecording;
         setState(() {
-          _recording = Recording(duration: Duration(), path: '');
-//          _isRecording = true;
           _isRecording = startedRec;
         });
       } else {
@@ -194,18 +193,20 @@ class _RecorderState extends State<Recorder> {
 
   _stopRecording() async {
     Recording recording = await AudioRecorder.stop();
+    _stopwatch.stop();
+    int recordingLength = _stopwatch.elapsedMilliseconds;
     bool isRecording = await AudioRecorder.isRecording;
     setState(() {
       clips.insert(
-          0,
+          0, // position in list
           Clip(
             recordingName: 'Clip #${clips.length + 1}',
             fileName: recording.path,
+            length: recordingLength,
             isLocal: true,
           ));
-      _recording = recording;
       _isRecording = isRecording;
-//      _isRecording = false;
+      _stopwatch.reset();
     });
   }
 }

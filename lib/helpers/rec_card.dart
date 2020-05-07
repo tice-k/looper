@@ -42,13 +42,13 @@ class RecordingCard extends StatelessWidget {
 //            SizedBox(
 //              height: 8.0,
 //            ),
-//            Text(
-//              'by ${rec.artistName}',
-//              style: TextStyle(
-//                fontSize: 18.0,
-//                color: Colors.grey[500],
-//              ),
-//            ),
+            Text(
+              _printDuration(Duration(milliseconds: rec.length)),
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.grey[400],
+              ),
+            ),
             SizedBox(
               height: 8.0,
             ),
@@ -81,5 +81,15 @@ class RecordingCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => (n >= 10) ? "$n" : "0$n";
+    String threeDigits(int n) => (n >= 100) ? "$n" : (n >= 10) ? "0$n" : "00$n";
+
+    String twoDigitMinutes = twoDigits(duration.inMinutes);
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    String threeDigitMilliseconds = twoDigits(duration.inMilliseconds.remainder(1000));
+    return "$twoDigitMinutes:$twoDigitSeconds.$threeDigitMilliseconds";
   }
 }
