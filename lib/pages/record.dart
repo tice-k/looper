@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:looper/helpers/recording.dart';
 import 'package:looper/helpers/rec_card.dart';
@@ -7,6 +6,7 @@ import 'package:audio_recorder/audio_recorder.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:app_settings/app_settings.dart';
 
 // TODO: bug: audio keeps playing after leaving recording page
 
@@ -126,6 +126,7 @@ class _RecorderState extends State<Recorder> {
                           title: Text('Enter name:'),
                           content: TextField(
                             controller: controller,
+                            autofocus: true,
                           ),
                           actions: <Widget>[
                             IconButton(
@@ -165,8 +166,26 @@ class _RecorderState extends State<Recorder> {
           _isRecording = startedRec;
         });
       } else {
-        Scaffold.of(context).showSnackBar(
-            SnackBar(content: new Text("You must accept permissions")));
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("You must accept permissions"),
+              FlatButton(
+                onPressed: () {
+                  AppSettings.openAppSettings();
+                },
+                child: Text(
+                  'SETTINGS',
+                  style: TextStyle(
+                    color: Colors.blue[700],
+                  ),
+                ),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              )
+            ],
+          ),
+        ));
       }
     } catch (e) {
       print(e);
