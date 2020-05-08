@@ -48,19 +48,44 @@ class RecordingCard extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              children: <Widget>[
+                Text(
+                  _printDuration(Duration(milliseconds: rec.length)),
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children : <Widget>[
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        if(rec.isMuted) {
+                          volumeChange(rec.unmuteVolume);
+                        } else {
+                          rec.unmuteVolume = rec.volume;
+                          volumeChange(0.0);
+                        }
+                        rec.isMuted = !rec.isMuted;
+                      },
+                      icon: Icon(rec.isMuted ? Icons.volume_off : Icons.volume_up),
+                    ),
+                    Slider(
+                      onChanged: volumeChange,
+                      value: rec.volume,
+                    ),
+                  ],
+                ),
+              ],
+            ),
 //            SizedBox(
 //              height: 8.0,
 //            ),
-            Text(
-              _printDuration(Duration(milliseconds: rec.length)),
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey[400],
-              ),
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -85,10 +110,6 @@ class RecordingCard extends StatelessWidget {
                   iconSize: 30.0,
                 ),
               ],
-            ),
-            Slider(
-              onChanged: volumeChange,
-              value: rec.volume,
             ),
           ],
         ),

@@ -92,7 +92,6 @@ class _RecorderState extends State<Recorder> {
                 return RecordingCard(
                   rec: clips[index],
                   play: () async {
-                    print(clips[index].fileName);
                     if (clips[index].audioPlayerID == null) {
                       if (clips[index].isLocal) {
                         AudioPlayer ap = AudioPlayer();

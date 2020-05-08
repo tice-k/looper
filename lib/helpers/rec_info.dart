@@ -6,6 +6,8 @@ class Clip {
   int length; // in milliseconds
   bool isLocal;
   double volume = 1.0;
+  double unmuteVolume = 1.0;
+  bool isMuted = false;
 
   Clip({
     this.recordingName = 'Untitled',
