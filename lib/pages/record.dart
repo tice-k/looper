@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:looper/helpers/recording.dart';
+import 'package:looper/helpers/rec_info.dart';
 import 'package:looper/helpers/rec_card.dart';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -70,7 +70,8 @@ class _RecorderState extends State<Recorder> {
                     children: <Widget>[
                       // record button
                       IconButton(
-                        onPressed: _isRecording ? _stopRecording : _startRecording,
+                        onPressed:
+                            _isRecording ? _stopRecording : _startRecording,
                         color: _isRecording ? Colors.red[900] : Colors.black,
                         icon: Icon(Icons.fiber_manual_record),
                         iconSize: 30.0,
@@ -95,13 +96,17 @@ class _RecorderState extends State<Recorder> {
                     if (clips[index].audioPlayerID == null) {
                       if (clips[index].isLocal) {
                         AudioPlayer ap = AudioPlayer();
-                        ap.play(clips[index].fileName,
-                            isLocal: clips[index].isLocal);
+                        ap.setReleaseMode(ReleaseMode.LOOP);
+                        ap.play(
+                          clips[index].fileName,
+                          isLocal: clips[index].isLocal,
+                          volume: 1.0,
+                        );
                         clips[index].setPlayerID(ap.playerId);
                       } else {
-                        clips[index].setPlayerID(
-                            (await assetPlayer.play(clips[index].fileName))
-                                .playerId);
+                        clips[index].setPlayerID((await assetPlayer
+                                .play(clips[index].fileName, volume: 0.1))
+                            .playerId);
                       }
                     } else {
                       AudioPlayer(playerId: clips[index].audioPlayerID)
@@ -113,6 +118,7 @@ class _RecorderState extends State<Recorder> {
                   },
                   stop: () {
                     AudioPlayer(playerId: clips[index].audioPlayerID).stop();
+                    AudioPlayer(playerId: clips[index].audioPlayerID).release();
                   },
                   delete: () {
                     setState(() {
@@ -146,6 +152,15 @@ class _RecorderState extends State<Recorder> {
                         );
                       },
                     );
+                  },
+                  volumeChange: (value) {
+                    setState(() {
+                      clips[index].volume = value;
+                      AudioPlayer currentPlayer = AudioPlayer(playerId: clips[index].audioPlayerID);
+                      if(currentPlayer != null) {
+                        currentPlayer.setVolume(value);
+                      }
+                    });
                   },
                 );
               },

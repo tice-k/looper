@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:looper/helpers/recording.dart';
+import 'package:looper/helpers/rec_info.dart';
 
 class RecordingCard extends StatelessWidget {
   final Clip rec;
@@ -8,8 +8,17 @@ class RecordingCard extends StatelessWidget {
   final Function stop;
   final Function delete;
   final Function editName;
+  final Function volumeChange;
 
-  RecordingCard({this.rec, this.play, this.pause, this.stop, this.delete, this.editName});
+  RecordingCard({
+    this.rec,
+    this.play,
+    this.pause,
+    this.stop,
+    this.delete,
+    this.editName,
+    this.volumeChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +85,11 @@ class RecordingCard extends StatelessWidget {
                   iconSize: 30.0,
                 ),
               ],
-            )
+            ),
+            Slider(
+              onChanged: volumeChange,
+              value: rec.volume,
+            ),
           ],
         ),
       ),
@@ -89,7 +102,8 @@ class RecordingCard extends StatelessWidget {
 
     String twoDigitMinutes = twoDigits(duration.inMinutes);
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    String threeDigitMilliseconds = twoDigits(duration.inMilliseconds.remainder(1000));
+    String threeDigitMilliseconds =
+        twoDigits(duration.inMilliseconds.remainder(1000));
     return "$twoDigitMinutes:$twoDigitSeconds.$threeDigitMilliseconds";
   }
 }

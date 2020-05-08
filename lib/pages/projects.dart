@@ -3,7 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:looper/helpers/project_card.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ProjectView extends StatelessWidget {
+class ProjectView extends StatefulWidget {
+
+  @override
+  _ProjectViewState createState() => _ProjectViewState();
+}
+
+class _ProjectViewState extends State<ProjectView> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
