@@ -95,6 +95,7 @@ class _RecorderState extends State<Recorder> {
                     if (clips[index].audioPlayerID == null) {
                       if (clips[index].isLocal) {
                         AudioPlayer ap = AudioPlayer();
+                        ap.setReleaseMode(ReleaseMode.LOOP);
                         ap.onPlayerCompletion.listen((event) {
                           ap.release();
                           setState(() {
@@ -113,6 +114,7 @@ class _RecorderState extends State<Recorder> {
                           volume: clips[index].volume,
                         );
                         clips[index].setPlayerID(ap.playerId);
+                        ap.setReleaseMode(ReleaseMode.LOOP);
                         ap.onPlayerCompletion.listen((event) {
                           setState(() {
                             clips[index].isPlaying = false;
@@ -181,6 +183,15 @@ class _RecorderState extends State<Recorder> {
                       if (currentPlayer != null) {
                         currentPlayer.setVolume(value);
                       }
+                    });
+                  },
+                  loopToggle: () {
+                    if(clips[index].loop)
+                      AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.RELEASE);
+                    else
+                      AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.LOOP);
+                    setState(() {
+                      clips[index].loop = !clips[index].loop;
                     });
                   },
                 );

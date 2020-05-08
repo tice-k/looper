@@ -9,6 +9,7 @@ class RecordingCard extends StatelessWidget {
   final Function delete;
   final Function editName;
   final Function volumeChange;
+  final Function loopToggle;
 
   RecordingCard({
     this.rec,
@@ -18,6 +19,7 @@ class RecordingCard extends StatelessWidget {
     this.delete,
     this.editName,
     this.volumeChange,
+    this.loopToggle,
   });
 
   @override
@@ -87,19 +89,28 @@ class RecordingCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
+                  onPressed: loopToggle,
+                  icon: Icon(Icons.loop),
+                  iconSize: 30.0,
+                  color: rec.loop ? Colors.white : Colors.grey[900],
+                ),
+                IconButton(
                   onPressed: rec.isPlaying ? pause : play,
                   icon: Icon(rec.isPlaying ? Icons.pause : Icons.play_arrow),
                   iconSize: 30.0,
+                  color: Colors.grey[900],
                 ),
                 IconButton(
                   onPressed: stop,
                   icon: Icon(Icons.stop),
                   iconSize: 30.0,
+                  color: Colors.grey[900],
                 ),
                 IconButton(
                   onPressed: delete,
                   icon: Icon(Icons.delete),
                   iconSize: 30.0,
+                  color: Colors.grey[900],
                 ),
               ],
             ),

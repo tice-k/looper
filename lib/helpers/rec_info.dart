@@ -9,6 +9,7 @@ class Clip {
   double volumeOnUnMute = 1.0;
   bool isMuted = false;
   bool isPlaying = false;
+  bool loop = true;
 
   Clip({
     this.recordingName = 'Untitled',
