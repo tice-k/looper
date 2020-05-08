@@ -95,29 +95,50 @@ class _RecorderState extends State<Recorder> {
                     if (clips[index].audioPlayerID == null) {
                       if (clips[index].isLocal) {
                         AudioPlayer ap = AudioPlayer();
-                        ap.setReleaseMode(ReleaseMode.LOOP);
+                        ap.onPlayerCompletion.listen((event) {
+                          ap.release();
+                          setState(() {
+                            clips[index].isPlaying = false;
+                          });
+                        });
                         ap.play(
                           clips[index].fileName,
                           isLocal: clips[index].isLocal,
-                          volume: 1.0,
+                          volume: clips[index].volume,
                         );
                         clips[index].setPlayerID(ap.playerId);
                       } else {
-                        clips[index].setPlayerID((await assetPlayer
-                                .play(clips[index].fileName, volume: 0.1))
-                            .playerId);
+                        AudioPlayer ap = await assetPlayer.play(
+                          clips[index].fileName,
+                          volume: clips[index].volume,
+                        );
+                        clips[index].setPlayerID(ap.playerId);
+                        ap.onPlayerCompletion.listen((event) {
+                          setState(() {
+                            clips[index].isPlaying = false;
+                          });
+                        });
                       }
                     } else {
                       AudioPlayer(playerId: clips[index].audioPlayerID)
                           .resume();
                     }
+                    setState(() {
+                      clips[index].isPlaying = !clips[index].isPlaying;
+                    });
                   },
                   pause: () {
                     AudioPlayer(playerId: clips[index].audioPlayerID).pause();
+                    setState(() {
+                      clips[index].isPlaying = !clips[index].isPlaying;
+                    });
                   },
                   stop: () {
                     AudioPlayer(playerId: clips[index].audioPlayerID).stop();
                     AudioPlayer(playerId: clips[index].audioPlayerID).release();
+                    setState(() {
+                      clips[index].isPlaying = false;
+                    });
                   },
                   delete: () {
                     setState(() {
@@ -155,8 +176,9 @@ class _RecorderState extends State<Recorder> {
                   volumeChange: (value) {
                     setState(() {
                       clips[index].volume = value;
-                      AudioPlayer currentPlayer = AudioPlayer(playerId: clips[index].audioPlayerID);
-                      if(currentPlayer != null) {
+                      AudioPlayer currentPlayer =
+                          AudioPlayer(playerId: clips[index].audioPlayerID);
+                      if (currentPlayer != null) {
                         currentPlayer.setVolume(value);
                       }
                     });

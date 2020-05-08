@@ -66,9 +66,9 @@ class RecordingCard extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         if(rec.isMuted) {
-                          volumeChange(rec.unmuteVolume);
+                          volumeChange(rec.volumeOnUnMute);
                         } else {
-                          rec.unmuteVolume = rec.volume;
+                          rec.volumeOnUnMute = rec.volume;
                           volumeChange(0.0);
                         }
                         rec.isMuted = !rec.isMuted;
@@ -83,20 +83,12 @@ class RecordingCard extends StatelessWidget {
                 ),
               ],
             ),
-//            SizedBox(
-//              height: 8.0,
-//            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
-                  onPressed: play,
-                  icon: Icon(Icons.play_arrow),
-                  iconSize: 30.0,
-                ),
-                IconButton(
-                  onPressed: pause,
-                  icon: Icon(Icons.pause),
+                  onPressed: rec.isPlaying ? pause : play,
+                  icon: Icon(rec.isPlaying ? Icons.pause : Icons.play_arrow),
                   iconSize: 30.0,
                 ),
                 IconButton(
