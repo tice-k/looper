@@ -41,165 +41,167 @@ class _RecorderState extends State<Recorder> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey,
-      ),
-      child: Column(
-        children: <Widget>[
-          // card: make a new recording
-          Card(
-            margin: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
-            color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(
-                    'Add New Recording',
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // record button
-                      IconButton(
-                        onPressed:
-                            _isRecording ? _stopRecording : _startRecording,
-                        color: _isRecording ? Colors.red[900] : Colors.black,
-                        icon: Icon(Icons.fiber_manual_record),
-                        iconSize: 30.0,
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Column(
+          children: <Widget>[
+            // card: make a new recording
+            Card(
+              margin: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+              color: Colors.blue,
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                      'Add New Recording',
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        color: Colors.grey[300],
                       ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        // record button
+                        IconButton(
+                          onPressed:
+                              _isRecording ? _stopRecording : _startRecording,
+                          color: _isRecording ? Colors.red[900] : Colors.black,
+                          icon: Icon(Icons.fiber_manual_record),
+                          iconSize: 30.0,
+                        ),
 //                      Text(
 //                        _printDuration(_stopwatch.elapsed),
 //                      ),
-                    ],
-                  )
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: clips.length,
-              itemBuilder: (context, index) {
-                return RecordingCard(
-                  rec: clips[index],
-                  play: () async {
-                    if (clips[index].audioPlayerID == null) {
-                      if (clips[index].isLocal) {
-                        AudioPlayer ap = AudioPlayer();
-                        ap.setReleaseMode(ReleaseMode.LOOP);
-                        ap.onPlayerCompletion.listen((event) {
-                          ap.release();
-                          setState(() {
-                            clips[index].isPlaying = false;
+            Expanded(
+              child: ListView.builder(
+                itemCount: clips.length,
+                itemBuilder: (context, index) {
+                  return RecordingCard(
+                    rec: clips[index],
+                    play: () async {
+                      if (clips[index].audioPlayerID == null) {
+                        if (clips[index].isLocal) {
+                          AudioPlayer ap = AudioPlayer();
+                          ap.setReleaseMode(ReleaseMode.LOOP);
+                          ap.onPlayerCompletion.listen((event) {
+                            ap.release();
+                            setState(() {
+                              clips[index].isPlaying = false;
+                            });
                           });
-                        });
-                        ap.play(
-                          clips[index].fileName,
-                          isLocal: clips[index].isLocal,
-                          volume: clips[index].volume,
-                        );
-                        clips[index].setPlayerID(ap.playerId);
+                          ap.play(
+                            clips[index].fileName,
+                            isLocal: clips[index].isLocal,
+                            volume: clips[index].volume,
+                          );
+                          clips[index].setPlayerID(ap.playerId);
+                        } else {
+                          AudioPlayer ap = await assetPlayer.play(
+                            clips[index].fileName,
+                            volume: clips[index].volume,
+                          );
+                          clips[index].setPlayerID(ap.playerId);
+                          ap.setReleaseMode(ReleaseMode.LOOP);
+                          ap.onPlayerCompletion.listen((event) {
+                            setState(() {
+                              clips[index].isPlaying = false;
+                            });
+                          });
+                        }
                       } else {
-                        AudioPlayer ap = await assetPlayer.play(
-                          clips[index].fileName,
-                          volume: clips[index].volume,
-                        );
-                        clips[index].setPlayerID(ap.playerId);
-                        ap.setReleaseMode(ReleaseMode.LOOP);
-                        ap.onPlayerCompletion.listen((event) {
-                          setState(() {
-                            clips[index].isPlaying = false;
-                          });
-                        });
+                        AudioPlayer(playerId: clips[index].audioPlayerID)
+                            .resume();
                       }
-                    } else {
-                      AudioPlayer(playerId: clips[index].audioPlayerID)
-                          .resume();
-                    }
-                    setState(() {
-                      clips[index].isPlaying = !clips[index].isPlaying;
-                    });
-                  },
-                  pause: () {
-                    AudioPlayer(playerId: clips[index].audioPlayerID).pause();
-                    setState(() {
-                      clips[index].isPlaying = !clips[index].isPlaying;
-                    });
-                  },
-                  stop: () {
-                    AudioPlayer(playerId: clips[index].audioPlayerID).stop();
-                    AudioPlayer(playerId: clips[index].audioPlayerID).release();
-                    setState(() {
-                      clips[index].isPlaying = false;
-                    });
-                  },
-                  delete: () {
-                    setState(() {
-                      clips.remove(clips[index]);
-                    });
-                  },
-                  editName: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        TextEditingController controller =
-                        TextEditingController(
-                            text: clips[index].recordingName);
-                        return AlertDialog(
-                          title: Text('Enter name:'),
-                          content: TextField(
-                            controller: controller,
-                            autofocus: true,
-                          ),
-                          actions: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.check),
-                              onPressed: () {
-                                setState(() {
-                                  clips[index].recordingName = controller.text;
-                                });
-                                Navigator.of(context).pop();
-                              },
+                      setState(() {
+                        clips[index].isPlaying = !clips[index].isPlaying;
+                      });
+                    },
+                    pause: () {
+                      AudioPlayer(playerId: clips[index].audioPlayerID).pause();
+                      setState(() {
+                        clips[index].isPlaying = !clips[index].isPlaying;
+                      });
+                    },
+                    stop: () {
+                      AudioPlayer(playerId: clips[index].audioPlayerID).stop();
+                      AudioPlayer(playerId: clips[index].audioPlayerID).release();
+                      setState(() {
+                        clips[index].isPlaying = false;
+                      });
+                    },
+                    delete: () {
+                      setState(() {
+                        clips.remove(clips[index]);
+                      });
+                    },
+                    editName: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          TextEditingController controller =
+                          TextEditingController(
+                              text: clips[index].recordingName);
+                          return AlertDialog(
+                            title: Text('Enter name:'),
+                            content: TextField(
+                              controller: controller,
+                              autofocus: true,
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  volumeChange: (value) {
-                    setState(() {
-                      clips[index].volume = value;
-                      AudioPlayer currentPlayer =
-                          AudioPlayer(playerId: clips[index].audioPlayerID);
-                      if (currentPlayer != null) {
-                        currentPlayer.setVolume(value);
-                      }
-                    });
-                  },
-                  loopToggle: () {
-                    if(clips[index].loop)
-                      AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.RELEASE);
-                    else
-                      AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.LOOP);
-                    setState(() {
-                      clips[index].loop = !clips[index].loop;
-                    });
-                  },
-                );
-              },
+                            actions: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.check),
+                                onPressed: () {
+                                  setState(() {
+                                    clips[index].recordingName = controller.text;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    volumeChange: (value) {
+                      setState(() {
+                        clips[index].volume = value;
+                        AudioPlayer currentPlayer =
+                            AudioPlayer(playerId: clips[index].audioPlayerID);
+                        if (currentPlayer != null) {
+                          currentPlayer.setVolume(value);
+                        }
+                      });
+                    },
+                    loopToggle: () {
+                      if(clips[index].loop)
+                        AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.RELEASE);
+                      else
+                        AudioPlayer(playerId: clips[index].audioPlayerID).setReleaseMode(ReleaseMode.LOOP);
+                      setState(() {
+                        clips[index].loop = !clips[index].loop;
+                      });
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

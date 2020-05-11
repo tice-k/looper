@@ -12,87 +12,88 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey,
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 100.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Looper',
-                style: TextStyle(
-                  fontSize: 50.0,
-                  letterSpacing: 3.0,
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 100.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Looper',
+                  style: TextStyle(
+                    fontSize: 50.0,
+                    letterSpacing: 3.0,
+                  ),
                 ),
-              ),
-              RaisedButton.icon(
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.blue,
-                ),
-                disabledColor: Colors.white,
-                label: Text(
-                    'Create New Project'
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      TextEditingController controller = TextEditingController();
-                      return AlertDialog(
-                        title: Text('Enter name:'),
-                        content: TextField(
-                          controller: controller,
-                          autofocus: true,
-                        ),
-                        actions: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.check),
-                            onPressed: () async {
-                              String projectName = controller.text;
-                              Directory appDir = await getApplicationDocumentsDirectory();
-                              await Directory(appDir.path + '/$projectName').create().then((value) => print(value.toString()));
-                              Navigator.of(context).pop();
-                            },
+                RaisedButton.icon(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.blue,
+                  ),
+                  disabledColor: Colors.white,
+                  label: Text('Create New Project'),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        TextEditingController controller =
+                            TextEditingController();
+                        return AlertDialog(
+                          title: Text('Enter name:'),
+                          content: TextField(
+                            controller: controller,
+                            autofocus: true,
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              RaisedButton.icon(
-                onPressed: () async {
-                  Directory appDir = await getApplicationDocumentsDirectory();
-                  appDir.delete(recursive: true);
-                },
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.blue,
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.check),
+                              onPressed: () async {
+                                String projectName = controller.text;
+                                Directory appDir =
+                                    await getApplicationDocumentsDirectory();
+                                Directory projectDir = await Directory(
+                                        appDir.path + '/$projectName')
+                                    .create();
+                                await File(projectDir.path + '/info.txt').create();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
-                label: Text(
-                    'Clear data'
+                RaisedButton.icon(
+                  onPressed: () async {
+                    Directory appDir = await getApplicationDocumentsDirectory();
+                    appDir.delete(recursive: true);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.blue,
+                  ),
+                  label: Text('Clear data'),
+                  disabledColor: Colors.white,
                 ),
-                disabledColor: Colors.white,
-              ),
-              RaisedButton.icon(
-                onPressed: () {
-
-                },
-                icon: Icon(
-                  Icons.person,
-                  color: Colors.blue,
-                ),
-                label: Text(
-                  'About',
-                ),
-                disabledColor: Colors.white,
-              )
-            ],
+                RaisedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.blue,
+                  ),
+                  label: Text(
+                    'About',
+                  ),
+                  disabledColor: Colors.white,
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -14,4 +14,9 @@ class ProjectFile {
   add(Clip newClip) {
     clips.add(newClip);
   }
+
+  @override
+  String toString() {
+    return this.name;
+  }
 }

@@ -3,12 +3,12 @@ import 'package:looper/helpers/project_info.dart';
 
 class ProjectCard extends StatelessWidget {
 
+  final ProjectFile projectFile;
   final Function openProject;
-  final String projectName;
 
   ProjectCard({
+    this.projectFile,
     this.openProject,
-    this.projectName,
   });
 
   @override
@@ -19,7 +19,7 @@ class ProjectCard extends StatelessWidget {
         margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
         color: Colors.blue,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+          padding: const EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -27,7 +27,7 @@ class ProjectCard extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      projectName,
+                      projectFile.name,
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.grey[300],
@@ -41,24 +41,14 @@ class ProjectCard extends StatelessWidget {
                   ),
                 ],
               ),
-//            SizedBox(
-//              height: 8.0,
-//            ),
-//            Text(
-//              _printDuration(Duration(milliseconds: rec.length)),
-//              style: TextStyle(
-//                fontSize: 14.0,
-//                color: Colors.grey[400],
-//              ),
-//            ),
               SizedBox(
-                height: 8.0,
+                height: 4.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    '0 recorded clips',
+                    '${projectFile.clips.length} recorded clips',
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
