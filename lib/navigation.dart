@@ -18,6 +18,13 @@ class _NavigationState extends State<Navigation> {
     Recorder(),
     Play(),
   ];
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final routePages = {
+    '/': () => MaterialPageRoute(builder: (context) => Home()),
+    '/projects': () => MaterialPageRoute(builder: (context) => ProjectView()),
+    '/record': () => MaterialPageRoute(builder: (context) => Recorder()),
+    '/play': () => MaterialPageRoute(builder: (context) => Play()),
+  };
   final List<BottomNavigationBarItem> _pageIcons = [
     BottomNavigationBarItem(
       icon: Icon(Icons.home),
@@ -46,13 +53,18 @@ class _NavigationState extends State<Navigation> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: pages[currentPage],
+      body: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
+        onGenerateRoute: (route) => routePages[route.name](),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.blue[900],
-        onTap: (index) {
+        onTap: (routeName) {
           setState(() {
-            currentPage = index;
+            navigatorKey.currentState.pushReplacementNamed(routePages.keys.toList()[routeName]);
+            currentPage = routeName;
           });
         },
         currentIndex: currentPage,
