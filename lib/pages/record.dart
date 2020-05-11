@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:app_settings/app_settings.dart';
 
 // TODO: bug: audio keeps playing after leaving recording page
+// TODO: pause button doesn't turn back after clip finishes playing (low priority)
 
 class Recorder extends StatefulWidget {
   @override
@@ -152,8 +153,8 @@ class _RecorderState extends State<Recorder> {
                       context: context,
                       builder: (context) {
                         TextEditingController controller =
-                            TextEditingController(
-                                text: clips[index].recordingName);
+                        TextEditingController(
+                            text: clips[index].recordingName);
                         return AlertDialog(
                           title: Text('Enter name:'),
                           content: TextField(

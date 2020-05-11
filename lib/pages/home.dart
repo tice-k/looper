@@ -30,22 +30,45 @@ class _HomeState extends State<Home> {
                 ),
               ),
               RaisedButton.icon(
-                onPressed: () {
-
-                },
                 icon: Icon(
                   Icons.add,
                   color: Colors.blue,
                 ),
-                label: Text(
-                  'Create New Project'
-                ),
                 disabledColor: Colors.white,
+                label: Text(
+                    'Create New Project'
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      TextEditingController controller = TextEditingController();
+                      return AlertDialog(
+                        title: Text('Enter name:'),
+                        content: TextField(
+                          controller: controller,
+                          autofocus: true,
+                        ),
+                        actions: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.check),
+                            onPressed: () async {
+                              String projectName = controller.text;
+                              Directory appDir = await getApplicationDocumentsDirectory();
+                              await Directory(appDir.path + '/$projectName').create().then((value) => print(value.toString()));
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
               RaisedButton.icon(
                 onPressed: () async {
-                  Directory appDoc = await getApplicationDocumentsDirectory();
-                  appDoc.delete(recursive: true);
+                  Directory appDir = await getApplicationDocumentsDirectory();
+                  appDir.delete(recursive: true);
                 },
                 icon: Icon(
                   Icons.delete,

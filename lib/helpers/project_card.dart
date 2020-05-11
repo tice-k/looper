@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:looper/helpers/project_info.dart';
 
 class ProjectCard extends StatelessWidget {
-  final ProjectFile project;
+
   final Function openProject;
+  final String projectName;
 
   ProjectCard({
-    this.project,
     this.openProject,
+    this.projectName,
   });
 
   @override
@@ -26,7 +27,7 @@ class ProjectCard extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      project.name,
+                      projectName,
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.grey[300],

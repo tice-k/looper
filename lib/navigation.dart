@@ -12,7 +12,7 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
 
   int currentPage = 0;
-  final List<Widget> _pages = [
+  List<Widget> pages = [
     Home(),
     ProjectView(),
     Recorder(),
@@ -46,7 +46,7 @@ class _NavigationState extends State<Navigation> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: _pages[currentPage],
+      body: pages[currentPage],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.blue[900],
