@@ -7,13 +7,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class ProjectView extends StatefulWidget {
-
   @override
   _ProjectViewState createState() => _ProjectViewState();
 }
 
 class _ProjectViewState extends State<ProjectView> {
-
   List<ProjectFile> projects = [];
 
   @override
@@ -27,14 +25,16 @@ class _ProjectViewState extends State<ProjectView> {
     projects.clear();
     Directory appDir = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> projectDirectories = appDir.listSync();
-    for(FileSystemEntity projectDir in projectDirectories) {
-      if(projectDir is Directory) {
-        if(await File(projectDir.path + '/info.txt').exists()) {
-          print('Project ${basename(projectDir.path)}');
+    for (FileSystemEntity projectDir in projectDirectories) {
+//      print(projectDir);
+      if (projectDir is Directory) {
+        if (await File(projectDir.path + '/info.txt').exists()) {
+//          print('Project ${basename(projectDir.path)}');
           List<Clip> projectClips = [];
           List<FileSystemEntity> clipFolders = projectDir.listSync();
-          for(FileSystemEntity clipFolder in clipFolders) {
-            if(clipFolder is Directory) {
+          for (FileSystemEntity clipFolder in clipFolders) {
+            print(clipFolder.toString());
+            if (clipFolder is Directory) {
 //              print('clip folder: ' + clipFolder.toString());
               if (clipFolder is Directory) {
                 File clipInfo = File('${clipFolder.path}/info.txt');
@@ -42,7 +42,7 @@ class _ProjectViewState extends State<ProjectView> {
                 Clip c = Clip(
                   recordingName: clipData[0],
                   artistName: clipData[1],
-                  fileName: clipData[2],
+                  filePath: clipData[2],
                   length: int.parse(clipData[3]),
                   isLocal: clipData[4] == 'true',
                 );
@@ -65,6 +65,12 @@ class _ProjectViewState extends State<ProjectView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        title: Text('Projects'),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Container(
         decoration: BoxDecoration(
           color: Colors.grey,
@@ -91,8 +97,11 @@ class _ProjectViewState extends State<ProjectView> {
                   return ProjectCard(
                     projectFile: projects[index],
                     openProject: () {
-                      // TODO: bottom navigation bar doesn't update
-                      Navigator.pushReplacementNamed(context, '/record');
+                      Navigator.pushNamed(
+                        context,
+                        '/record',
+                        arguments: projects[index],
+                      );
                     },
                   );
                 },

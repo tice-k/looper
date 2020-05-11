@@ -1,7 +1,7 @@
 class Clip {
   String recordingName;
   String artistName;
-  String fileName; // path name
+  String filePath; // path name
   String audioPlayerID;
   int length; // in milliseconds
   bool isLocal;
@@ -14,7 +14,7 @@ class Clip {
   Clip({
     this.recordingName = 'Untitled',
     this.artistName = 'Unknown',
-    this.fileName,
+    this.filePath,
     this.length = 0,
     this.isLocal = false,
   });

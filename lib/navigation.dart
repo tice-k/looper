@@ -15,14 +15,12 @@ class _NavigationState extends State<Navigation> {
   List<Widget> pages = [
     Home(),
     ProjectView(),
-    Recorder(),
     Play(),
   ];
   final navigatorKey = GlobalKey<NavigatorState>();
   final routePages = {
     '/': () => MaterialPageRoute(builder: (context) => Home()),
     '/projects': () => MaterialPageRoute(builder: (context) => ProjectView()),
-    '/record': () => MaterialPageRoute(builder: (context) => Recorder()),
     '/play': () => MaterialPageRoute(builder: (context) => Play()),
   };
   final List<BottomNavigationBarItem> _pageIcons = [
@@ -35,10 +33,6 @@ class _NavigationState extends State<Navigation> {
       title: Text('Projects'),
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.headset_mic),
-      title: Text('Clips'),
-    ),
-    BottomNavigationBarItem(
       icon: Icon(Icons.audiotrack),
       title: Text('Play'),
     ),
@@ -47,16 +41,15 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        title: currentPage == 0 ? null : Text('Looper'),
-        centerTitle: true,
-        elevation: 0,
-      ),
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
-        onGenerateRoute: (route) => routePages[route.name](),
+        onGenerateRoute: (route) {
+          if(route.name == '/record')
+            return MaterialPageRoute(builder: (context) => Recorder(route.arguments));
+          else
+            return routePages[route.name]();
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

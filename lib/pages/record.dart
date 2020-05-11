@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:looper/helpers/rec_info.dart';
 import 'package:looper/helpers/rec_card.dart';
+import 'package:looper/helpers/project_info.dart';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
@@ -13,6 +14,10 @@ import 'package:app_settings/app_settings.dart';
 // TODO: pause button doesn't turn back after clip finishes playing (low priority)
 
 class Recorder extends StatefulWidget {
+
+  final ProjectFile project;
+  const Recorder(this.project);
+
   @override
   _RecorderState createState() => _RecorderState();
 }
@@ -23,25 +28,43 @@ class _RecorderState extends State<Recorder> {
   bool _isRecording = false;
   Stopwatch _stopwatch = Stopwatch();
   Timer _timer;
+  String savePath = '';
 
-  List<Clip> clips = [
-    Clip(
-      recordingName: 'The Nights',
-      artistName: 'Avicii',
-      fileName: 'the-nights.mp3',
-      length: 173000,
-    ),
-    Clip(
-      recordingName: 'Here With Me',
-      artistName: 'Marshmello',
-      fileName: 'here-with-me-ft-chvrches.mp3',
-      length: 154000,
-    ),
-  ];
+  List<Clip> clips = [];
 
   @override
   Widget build(BuildContext context) {
+//    print(ModalRoute.of(context).settings.arguments);
+//    final ProjectFile project = ModalRoute.of(context).settings.arguments;
+    if(widget.project != null) {
+      savePath = widget.project.projectPath;
+      clips = widget.project.clips;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue[900],
+        title: Text(widget.project.name),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey,
+          ),
+          child: Center(
+            child: Text('Please select a project'),
+          ),
+        ),
+      );
+    }
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+//        title: Text(project.name),
+        title: Text('Record'),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Container(
         decoration: BoxDecoration(
           color: Colors.grey,
@@ -105,14 +128,14 @@ class _RecorderState extends State<Recorder> {
                             });
                           });
                           ap.play(
-                            clips[index].fileName,
+                            clips[index].filePath,
                             isLocal: clips[index].isLocal,
                             volume: clips[index].volume,
                           );
                           clips[index].setPlayerID(ap.playerId);
                         } else {
                           AudioPlayer ap = await assetPlayer.play(
-                            clips[index].fileName,
+                            clips[index].filePath,
                             volume: clips[index].volume,
                           );
                           clips[index].setPlayerID(ap.playerId);
@@ -209,9 +232,22 @@ class _RecorderState extends State<Recorder> {
   _startRecording() async {
     try {
       if (await AudioRecorder.hasPermissions) {
-        Directory appDoc = await getApplicationDocumentsDirectory();
-        int tStart = DateTime.now().millisecondsSinceEpoch;
-        String recordingPath = appDoc.path + '/custom_recording$tStart.m4a';
+        String recordingPath;
+        if(savePath.isEmpty) {
+          Directory appDoc = await getApplicationDocumentsDirectory();
+          int tStart = DateTime.now().millisecondsSinceEpoch;
+          recordingPath = appDoc.path + '/REC$tStart.m4a';
+        } else {
+          await Directory(savePath + '/clip${clips.length + 1}').create();
+          File infoFile = await File(savePath + '/clip${clips.length + 1}/info.txt').create();
+          infoFile.writeAsString('Clip #${clips.length + 1}\n' +
+              'unkown artist\n' +
+              'savePath' + '/clip${clips.length + 1}\n'+
+              '0\n' +
+              'true');
+          int tStart = DateTime.now().millisecondsSinceEpoch;
+          recordingPath = savePath + '/clip${clips.length + 1}/REC$tStart.m4a';
+        }
         await AudioRecorder.start(path: recordingPath);
         _stopwatch.start();
         bool startedRec = await AudioRecorder.isRecording;
@@ -255,7 +291,7 @@ class _RecorderState extends State<Recorder> {
           0, // position in list
           Clip(
             recordingName: 'Clip #${clips.length + 1}',
-            fileName: recording.path,
+            filePath: recording.path,
             length: recordingLength,
             isLocal: true,
           ));
