@@ -14,9 +14,9 @@ class Clip {
   Clip({
     this.recordingName = 'Untitled',
     this.artistName = 'Unknown',
-    this.filePath,
+    this.filePath, // directly to .m4a file, inside of clip directory with info.txt file
     this.length = 0,
-    this.isLocal = false,
+    this.isLocal = true,
   });
 
   void setPlayerID(playerID) {

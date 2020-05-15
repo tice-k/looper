@@ -64,7 +64,8 @@ class _HomeState extends State<Home> {
                                 Directory projectDir = await Directory(
                                         appDir.path + '/$projectName')
                                     .create();
-                                await File(projectDir.path + '/info.txt').create();
+                                File info = await File(projectDir.path + '/info.txt').create();
+                                info.writeAsString('$projectName\n0');
                                 Navigator.of(context).pop();
                               },
                             ),

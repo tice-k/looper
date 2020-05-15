@@ -20,6 +20,16 @@ class _ProjectViewState extends State<ProjectView> {
     initialize();
   }
 
+  /*
+  sample project info.txt file:
+    [name]
+    [int - totalClipsEver]
+  sample clip info.txt file:
+    [name]
+    [artistName]
+    [int - length in ms]
+   */
+
   initialize() async {
     // get all projects
     projects.clear();
@@ -33,7 +43,7 @@ class _ProjectViewState extends State<ProjectView> {
           List<Clip> projectClips = [];
           List<FileSystemEntity> clipFolders = projectDir.listSync();
           for (FileSystemEntity clipFolder in clipFolders) {
-            print(clipFolder.toString());
+//            print(clipFolder.toString());
             if (clipFolder is Directory) {
 //              print('clip folder: ' + clipFolder.toString());
               if (clipFolder is Directory) {
@@ -44,7 +54,6 @@ class _ProjectViewState extends State<ProjectView> {
                   artistName: clipData[1],
                   filePath: clipData[2],
                   length: int.parse(clipData[3]),
-                  isLocal: clipData[4] == 'true',
                 );
                 projectClips.add(c);
               }
