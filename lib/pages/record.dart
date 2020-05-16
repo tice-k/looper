@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:looper/helpers/rec_info.dart';
@@ -7,7 +6,6 @@ import 'package:looper/helpers/project_info.dart';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:app_settings/app_settings.dart';
 
 // TODO: bug: audio keeps playing after leaving recording page
@@ -27,7 +25,6 @@ class _RecorderState extends State<Recorder> {
   List<AudioPlayer> players = []; // list of audio players for each clip
   bool _isRecording = false;
   Stopwatch _stopwatch = Stopwatch();
-  Timer _timer;
   String savePath = '';
 
   List<Clip> clips = [];
@@ -48,6 +45,7 @@ class _RecorderState extends State<Recorder> {
           centerTitle: true,
           elevation: 0,
         ),
+        resizeToAvoidBottomInset: false,
         body: Container(
           decoration: BoxDecoration(
             color: Colors.grey,

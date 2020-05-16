@@ -80,6 +80,7 @@ class _ProjectViewState extends State<ProjectView> {
         centerTitle: true,
         elevation: 0,
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           color: Colors.grey,

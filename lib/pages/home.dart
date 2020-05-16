@@ -18,12 +18,9 @@ class _HomeState extends State<Home> {
         TextEditingController controller = TextEditingController();
         return AlertDialog(
           title: Text('Enter name:'),
-          content: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: TextField(
-              controller: controller,
-              autofocus: true,
-            ),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
           ),
           actions: <Widget>[
             IconButton(
@@ -52,6 +49,7 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         elevation: 0,
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           color: Colors.grey,
