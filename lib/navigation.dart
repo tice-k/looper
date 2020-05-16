@@ -10,7 +10,6 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-
   int currentPage = 0;
   List<Widget> pages = [
     Home(),
@@ -45,7 +44,7 @@ class _NavigationState extends State<Navigation> {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
         onGenerateRoute: (route) {
-          if(route.name == '/record')
+          if (route.name == '/record')
             return MaterialPageRoute(builder: (context) => Recorder(route.arguments));
           else
             return routePages[route.name]();

@@ -52,7 +52,7 @@ class _ProjectViewState extends State<ProjectView> {
                 Clip c = Clip(
                   recordingName: clipData[0],
                   artistName: clipData[1],
-                  filePath: clipData[2],
+                  recordingPath: clipData[2],
                   length: int.parse(clipData[3]),
                 );
                 projectClips.add(c);

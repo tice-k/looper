@@ -128,14 +128,14 @@ class _RecorderState extends State<Recorder> {
                             });
                           });
                           ap.play(
-                            clips[index].filePath,
+                            clips[index].recordingPath,
                             isLocal: clips[index].isLocal,
                             volume: clips[index].volume,
                           );
                           clips[index].setPlayerID(ap.playerId);
                         } else {
                           AudioPlayer ap = await assetPlayer.play(
-                            clips[index].filePath,
+                            clips[index].recordingPath,
                             volume: clips[index].volume,
                           );
                           clips[index].setPlayerID(ap.playerId);
@@ -188,9 +188,7 @@ class _RecorderState extends State<Recorder> {
                                 onPressed: () {
                                   setState(() {
                                     clips[index].recordingName = controller.text;
-                                    File info = File(
-                                        clips[index].filePath.substring(0, clips[index].filePath.lastIndexOf('/')) +
-                                            '/info.txt');
+                                    File info = File(clips[index].folderPath + '/info.txt');
                                     List<String> data = info.readAsLinesSync();
                                     data[0] = clips[index].recordingName;
                                     info.writeAsStringSync(listToString(data));
@@ -297,7 +295,7 @@ class _RecorderState extends State<Recorder> {
           0, // position in list
           Clip(
             recordingName: 'Clip #${getClipCount()}',
-            filePath: recording.path,
+            recordingPath: recording.path,
             length: recordingLength,
             isLocal: true,
           ));

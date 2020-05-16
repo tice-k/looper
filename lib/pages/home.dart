@@ -10,6 +10,40 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  _createProject() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController controller = TextEditingController();
+        return AlertDialog(
+          title: Text('Enter name:'),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: TextField(
+              controller: controller,
+              autofocus: true,
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: () async {
+                String projectName = controller.text;
+                controller.dispose();
+                Directory appDir = await getApplicationDocumentsDirectory();
+                Directory projectDir = await Directory(appDir.path + '/$projectName').create();
+                File info = await File(projectDir.path + '/info.txt').create();
+                info.writeAsString('$projectName\n0');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,43 +76,35 @@ class _HomeState extends State<Home> {
                   ),
                   disabledColor: Colors.white,
                   label: Text('Create New Project'),
+                  onPressed: _createProject,
+                ),
+                RaisedButton.icon(
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        TextEditingController controller =
-                            TextEditingController();
                         return AlertDialog(
-                          title: Text('Enter name:'),
-                          content: TextField(
-                            controller: controller,
-                            autofocus: true,
-                          ),
+                          title: Text('Are you sure?'),
+                          content: Text('Deleting your data is permanent.'),
                           actions: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.check),
+                            FlatButton(
+                              child: Text('No'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            FlatButton(
+                              child: Text('Yes'),
                               onPressed: () async {
-                                String projectName = controller.text;
-                                Directory appDir =
-                                    await getApplicationDocumentsDirectory();
-                                Directory projectDir = await Directory(
-                                        appDir.path + '/$projectName')
-                                    .create();
-                                File info = await File(projectDir.path + '/info.txt').create();
-                                info.writeAsString('$projectName\n0');
+                                Directory appDir = await getApplicationDocumentsDirectory();
+                                appDir.delete(recursive: true);
                                 Navigator.of(context).pop();
                               },
                             ),
                           ],
                         );
-                      },
+                      }
                     );
-                  },
-                ),
-                RaisedButton.icon(
-                  onPressed: () async {
-                    Directory appDir = await getApplicationDocumentsDirectory();
-                    appDir.delete(recursive: true);
                   },
                   icon: Icon(
                     Icons.delete,
