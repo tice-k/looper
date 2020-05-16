@@ -27,6 +27,7 @@ class _ProjectViewState extends State<ProjectView> {
   sample clip info.txt file:
     [name]
     [artistName]
+    [recordingPath]
     [int - length in ms]
    */
 

@@ -45,7 +45,6 @@ class _RecorderState extends State<Recorder> {
           centerTitle: true,
           elevation: 0,
         ),
-        resizeToAvoidBottomInset: false,
         body: Container(
           decoration: BoxDecoration(
             color: Colors.grey,
@@ -64,6 +63,7 @@ class _RecorderState extends State<Recorder> {
         centerTitle: true,
         elevation: 0,
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           color: Colors.grey,
@@ -241,12 +241,11 @@ class _RecorderState extends State<Recorder> {
           addToClipCount();
           await Directory(savePath + '/clip${getClipCount()}').create();
           File infoFile = await File(savePath + '/clip${getClipCount()}/info.txt').create();
-          infoFile.writeAsString('Clip #${getClipCount()}\n' +
-              'unkown artist\n' +
-              'savePath' +
-              '/clip${getClipCount()}\n' +
-              '0\n' +
-              'true\n');
+          infoFile.writeAsString(
+              'Clip #${getClipCount()}\n' +
+              'unknown artist\n' +
+              '$savePath/clip${getClipCount()}\n' +
+              '0\n');
           int tStart = DateTime.now().millisecondsSinceEpoch;
           recordingPath = savePath + '/clip${getClipCount()}/REC$tStart.m4a';
         }
